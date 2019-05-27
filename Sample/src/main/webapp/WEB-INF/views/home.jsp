@@ -137,7 +137,7 @@
 						<p class="card-text"></p>
 					</div>
 					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Click here </a>
+						<a href="document" target="_blank" class="btn btn-primary">Click here </a>
 					</div>
 				</div>
 			</div>

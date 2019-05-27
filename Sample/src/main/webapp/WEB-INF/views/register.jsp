@@ -74,7 +74,7 @@ body{
 						data-validate="DOB is required">
 						<span class="label-input100">DOB</span>
 						<p>
-							<input type="text" id="datepicker" size="30" name="dateOfBirth">
+							<input type="text" id="datepicker" size="30" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" name="dateOfBirth">
 						</p>
 						<span class="focus-input100"></span>
 					</div>
@@ -82,7 +82,7 @@ body{
 						data-validate="EMAILID is required">
 						<span class="label-input100">EMAILID</span> <input
 							class="input100" type="text" name="emailId"
-							placeholder="Enter EMAILID"> <span class="focus-input100"></span>
+							placeholder="Enter EMAILID" pattern="[a-zA-Z0-9]+[@]{1}[a-zA-Z]+[.]{1}[a-zA-z]{2,4}"> <span class="focus-input100"></span>
 					</div>
 					<div class="wrap-input100 validate-input m-b-26"
 						data-validate="Mobile Number is required">

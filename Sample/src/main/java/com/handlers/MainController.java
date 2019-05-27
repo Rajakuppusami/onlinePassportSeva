@@ -1,5 +1,7 @@
 package com.handlers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -10,15 +12,19 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.model.Applicants;
@@ -50,6 +56,8 @@ public class MainController {
 	final SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
 	final SimpleDateFormat sdft=new SimpleDateFormat("dd-MM-yyyy HH:mm");
 	LocalDate date =null;
+	private static final String FILE_PATH = "classpath:passport-document-list.pdf";
+    private static final String APPLICATION_PDF = "application/pdf";
 	
 	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public ModelAndView test(){
@@ -61,6 +69,14 @@ public class MainController {
 		model.setViewName("test");
 		return model;
 	}
+	
+	/*
+	 * login page is target
+	 * 
+	 * if user is already logged in then the user cannot go to login page it
+	 * will be redirected to home page
+	 * 
+	 */
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
 		ModelAndView model = new ModelAndView();
@@ -77,6 +93,14 @@ public class MainController {
 		return model;
 	}
 	
+	/*
+	 * login functionality
+	 * 
+	 * if username and password are valid then it will redirect to the home page
+	 * and display the popup message
+	 * default values(applicantId,modelscript,modelbodycontent) added to the session
+	 * 
+	 */
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public ModelAndView login(@RequestParam("username") String username , @RequestParam("password") String password ,HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -100,6 +124,13 @@ public class MainController {
 		return model;
 	}
 	
+	/*
+	 * register page is target
+	 * 
+	 * if user is already logged in then the user cannot go to register page it
+	 * will be redirected to home page
+	 * 
+	 */
 	@RequestMapping(value="/register", method=RequestMethod.GET)
 	public ModelAndView registerPage(HttpSession session) {
 		ModelAndView model = new ModelAndView();
@@ -115,6 +146,16 @@ public class MainController {
 		return model;
 	}
 	
+	/*
+	 * register functionality
+	 * 
+	 * if login and email id are unique then user can register else cannot
+	 * register
+	 * 
+	 * - checkValidApplicant() - check for login id and email id (unique) -
+	 * saveApplicant() - store applicant
+	 * 
+	 */
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public ModelAndView register(@ModelAttribute Applicants applicant, @RequestParam("dateOfBirth") String dob,HttpServletRequest request) throws ParseException {
 		ModelAndView model = new ModelAndView();
@@ -141,6 +182,20 @@ public class MainController {
 		return model;
 	}
 	
+	/*
+	 * home page is target
+	 * 
+	 * if the user is not logged in then it redirect to the login page
+	 * else 
+	 * 	adding some default values for home page into modelandview object such as modelscript,modelbodycontent,schedulebuttoncss
+	 * 	if it is new user then schedule option will be disabled and schedule details will be as "Not yet scheduled"
+	 * 	else schedule option will be enabled and schedule details will be fetched from DB
+	 * 	resetting the modelscript,modelbodycontent in session
+	 * 
+	 * 	checkSessionValidation() - if the user is not logged in, it will redirect to login page (i.e setViewName("redirect:/login")).
+	 * 	getScheduledData() - if the user has scheduled, it will fetch the datas from DB, else returns null.
+	 * 
+	 */
 	@RequestMapping(value="/home", method=RequestMethod.GET)
 	public ModelAndView homePage(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -172,6 +227,19 @@ public class MainController {
 		}
 		return model;
 	}
+	
+	
+	/*
+	 * eform page is target
+	 * 
+	 * if the user is not logged in then it redirect to the login page
+	 * else 
+	 * 	if the user is already register in e-form then corresponding details of user will be set by default
+	 * 	else it will be empty 
+	 *  
+	 * 	checkSessionValidation() - if the user is not logged in, it will redirect to login page (i.e setViewName("redirect:/login")).
+	 * 	findByApplicantId() - returns the e-form details of given applicant id
+	 */
 	@RequestMapping(value="/eform", method=RequestMethod.GET)
 	public ModelAndView eformPage(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -204,9 +272,6 @@ public class MainController {
 		ModelAndView model = new ModelAndView();
 		HttpSession session = request.getSession();
 		String applicantId = (String) session.getAttribute("applicantId");
-		if(applicantId.isEmpty()||applicantId==null){
-			model.setViewName("login");
-		}else{
 		qualifiedApplicants.setDob(formDate(dateOfBirth));
 		qualifiedApplicants.setApplicantId(applicantId);
 		System.out.println(qualifiedApplicants);
@@ -236,11 +301,11 @@ public class MainController {
 			}else{
 				model.addObject("errormessage", "Email Id ,Mobile Number or Aadhar Number already exists");
 				model.addObject("errorcss", "alert alert-danger m-2");
+				model.addObject("homecss", "d-none");
+				model.addObject("operation", "insert");
+				model.addObject("buttonvalue", "Submit");
 				model.setViewName("eform");
 			}
-		}
-		
-		
 		}
 		
 		return model;
@@ -307,6 +372,7 @@ public class MainController {
 		HttpSession session =request.getSession();
 		System.out.println("#### "+schedule);
 		String applicantId = (String) session.getAttribute("applicantId");
+		crmDate = crmDate.substring(0,10);
 		if(scheduleService.checkAvailabe(formDate(crmDate,crmTime),schedule.getPassportOffice())){
 			model.setViewName("payment");
 			schedule.setApplicantId(applicantId);
@@ -382,6 +448,68 @@ public class MainController {
 		return model;
 	}
 	
+	/*@RequestMapping(value="/forgotpassword", method=RequestMethod.GET)
+	public ModelAndView forgotpasswordPage() throws ParseException {
+		ModelAndView model = new ModelAndView();
+		model.addObject("name", "Login In");
+		model.setViewName("forgotpassword");
+		return model;
+	}
+	
+	@RequestMapping(value="/forgotpassword", method=RequestMethod.POST)
+	public ModelAndView forgotpassword(HttpSession session, @RequestParam("name") String name,@RequestParam("token") String token) throws ParseException {
+		ModelAndView model = new ModelAndView();
+		if(session==null||session.isNew()){
+			
+			Applicants applicant=applicantService.findByApplicantId(name);
+			if(applicant!=null){
+				session.setAttribute("applicantId", name);
+				model.addObject("applicant", applicant);
+				model.addObject("crformcss", "d-none");
+				model.addObject("token", "hint");
+				model.setViewName("forgotpassword");
+			}else{
+				model.addObject("errormsg", "login id not registered");
+				model.addObject("crformcss", "d-none");
+				model.setViewName("forgotpassword");
+			}
+		}else{
+			if(session.getAttribute("applicantId")==null){
+				session.setAttribute("applicantId", name);
+				Applicants applicant=applicantService.findByApplicantId(name);
+				if(applicant!=null){
+					session.setAttribute("applicantId", name);
+					model.addObject("applicant", applicant);
+					model.addObject("token", "hint");
+					model.addObject("crformcss", "d-none");
+					model.setViewName("forgotpassword");
+				}else{
+					model.addObject("error", "login id not registered");
+					model.addObject("crformcss", "d-none");
+					model.setViewName("forgotpassword");
+				}
+			}else{
+				String applicantId=(String) session.getAttribute("applicantId");
+				Applicants applicant=applicantService.findByApplicantId(applicantId);
+				if(token.equals("set")){
+					model.addObject("name", "Password");
+					applicantService.updatePassword(applicant,name);
+					model.setViewName("redirect:/login");
+					return model;
+				}else if(token.equals("hint")){
+					if(applicant.getHintAnswer().equalsIgnoreCase(name)){
+						model.addObject("name", "Password");
+					}else{
+						model.addObject("error", "Hint answer is wrong");
+						model.addObject("crformcss", "d-none");
+					}
+				}
+			}
+		}
+		model.setViewName("forgotpassword");
+		return model;
+	}*/
+	
 	public static void main(String[] args) {
 		List<String> monthList = new ArrayList<String>();
 		LocalDate today = LocalDate.now();
@@ -417,6 +545,24 @@ public class MainController {
 		return dt;
 	}
 	
+	@RequestMapping(value = "/document", method = RequestMethod.GET, produces = APPLICATION_PDF)
+	public @ResponseBody Resource downloadC(HttpServletResponse response) throws FileNotFoundException {
+	    File file = getFile();
+	    response.setContentType(APPLICATION_PDF);
+	    response.setHeader("Content-Disposition", "inline; filename=" + file.getName());
+	    response.setHeader("Content-Length", String.valueOf(file.length()));
+	    return new FileSystemResource(file);
+	}
+	private File getFile() throws FileNotFoundException {
+        File file = ResourceUtils.getFile("classpath:passportdocumentlist.pdf");
+
+        		//new File(FILE_PATH);
+        if (!file.exists()){
+            throw new FileNotFoundException("file with path: " + FILE_PATH + " was not found.");
+        }
+        return file;
+    }
+
 	public ModelAndView checkSessionValidation(HttpSession session,ModelAndView model){
 		if(session.isNew()||session==null){
 			model.setViewName("redirect:/login");

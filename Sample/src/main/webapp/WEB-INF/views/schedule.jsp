@@ -50,7 +50,7 @@
 		<div class="col-md-6">
 			<div class="card">
 				<div class="card-header">
-					Chech for Available Date:
+					<b>Check for Available Date:</b>
 				</div>
 				<div class="card-body">
 					<form action="scheduleappointment" method="post">
@@ -99,8 +99,10 @@
 	
 	<div class="row m-3">
 		<div class="col-sm-12">
+			<center style="color:white;"><h2><strong>TIME SLOT</strong></h2></center>
 			<div class="table-responsive">
 				<table class="table">
+					<%-- <caption>Time Slot</caption> --%>
 					<thead class="thead-dark" style="background-color:black;color:white;">
 					    <tr>
 					      <th scope="col">Date</th>

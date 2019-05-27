@@ -20,7 +20,7 @@
 <link href="resources/vendor/fontawesome-free/css/all.min.css"
 	rel="stylesheet" type="text/css">
 </head>
-<body style="background-image: url(resources/images/bg-02.jpg);">
+<body style="background-image:linear-gradient(to top, blue, indigo, violet);">
 <nav
 		class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
 	<div class="container">
@@ -79,14 +79,14 @@
 						<div class="form-group col-md-6">
 							<label> Email id </label> <input type="text" name="emailId"
 								class="form-control" placeholder="Email ID"
-								value="${qualifiedapplicants.emailId}" required>
+								value="${qualifiedapplicants.emailId}" pattern="[a-zA-Z0-9]+[@]{1}[a-zA-Z]+[.]{1}[a-zA-z]{2,4}" required>
 							<div class="invalid-feedback">Please provide a unique and
 								valid emailId.</div>
 						</div>
 						<div class="form-group col-md-6">
 							<label> Mobile Number </label> <input type="text"
 								name="mobileNumber" class="form-control"
-								placeholder="Mobile Number"
+								placeholder="Mobile Number"  maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
 								value="${qualifiedapplicants.mobileNumber}" required>
 							<div class="invalid-feedback">Please provide a unique and
 								valid Mobile Number.</div>
@@ -103,7 +103,7 @@
 						<div class="form-group col-md-6">
 							<label> Date of Birth </label> <input type="text"
 								name="dateOfBirth" class="form-control " id="datepicker"
-								placeholder="Date of Birth" value="${dateOfBirth}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" required>
+								placeholder="Date of Birth" value="${dateOfBirth}" maxlength="10" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" required>
 							<div class="invalid-feedback">Please provide a place.</div>
 						</div>
 					</div>
@@ -116,15 +116,15 @@
 							<div class="invalid-feedback">Please provide a name.</div>
 						</div>
 						<div class="form-group col-md-6">
-							<label> Mother's Name </label> <input type="text"
+							<!-- <label> Mother's Name </label> <input type="text"
 								class="form-control" placeholder="Mother's Name" required>
-							<div class="invalid-feedback">Please provide a name.</div>
+							<div class="invalid-feedback">Please provide a name.</div> -->
 						</div>
 					</div>
 					<div class="form-group">
 						<label> Aadhar Number </label> <input type="text"
 							name="aadharNumber" class="form-control"
-							placeholder="Aadhar Number" maxlength="11"  value="${qualifiedapplicants.aadharNumber}" required>
+							placeholder="Aadhar Number" maxlength="12" onkeypress='return event.charCode >= 48 && event.charCode <= 57'  value="${qualifiedapplicants.aadharNumber}" required>
 						<div class="invalid-feedback">Please provide a Aadhar
 							Number.</div>
 					</div>

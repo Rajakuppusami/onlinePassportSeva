@@ -73,5 +73,11 @@ public class ApplicantsServiceImplementation {
 			applicant=applicantList.get(applicantList.size()-1);
 		return applicant;
 	}
+
+
+	public void updatePassword(Applicants applicant, String password) {
+		applicant.setPassword(password);
+		applicantsRepository.save(applicant);
+	}
 	
 }

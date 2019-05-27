@@ -7,7 +7,7 @@ import com.dao.AdminRepository;
 import com.model.Admin;
 
 @Service
-public class AdminServiceImplementation implements AdminService{
+public class AdminServiceImplementation{
 	
 	@Autowired
 	private AdminRepository adminRepository;

@@ -2,6 +2,7 @@ package com.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,6 +46,9 @@ public class ScheduleServiceImplementation {
 		//checking by date wise
 		while(true){
 			//logic for db
+			if(date.getDayOfWeek().toString().equals("SATURDAY")){
+				date=date.plusDays(2);
+			}
 			Date scheduledate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 			List<Schedule> scheduleList = scheduleRepository.findByScheduleDateAndPassportOffice(scheduledate,passportOffice);
 			LinkedHashMap<String, String> tableDatebyTime = new LinkedHashMap<String, String>();
@@ -91,8 +95,13 @@ public class ScheduleServiceImplementation {
 					
 				}
 			}
-			tableDate.put(sdf.format(scheduledate), tableDatebyTime);
+			tableDate.put(sdf.format(scheduledate)+"<br> (<b>"+date.getDayOfWeek()+"</b>)", tableDatebyTime);
 			System.out.println(date.toString());
+			
+			/*if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY)){
+				date=date.plusDays(2);
+			}*/
+			
 			date=date.plusDays(1);
 			if(!month.equals(date.getMonth().toString())){
 				System.out.println(date.getMonth());
@@ -153,9 +162,10 @@ public class ScheduleServiceImplementation {
 			System.out.println(date1.toString());
 		}*/
 		
-		MainController m=new MainController();
-		System.out.println(m.formDate("25-02-2017","24:00"));
-		
+		/*MainController m=new MainController();
+		System.out.println(m.formDate("25-02-2017","24:00"));*/
+		LocalDate date = LocalDate.now();
+		System.out.println(date.getDayOfWeek());
 	}
 
 	public void saveSchedule(Schedule schedule) {

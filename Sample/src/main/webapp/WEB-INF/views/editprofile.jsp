@@ -82,7 +82,7 @@ body{
 			<div class="wrap-login100">
 				<div class="login100-form-title"
 					style="background-image: url("resources/images/passport.png");">
-					<span class="login100-form-title-1"> REGISTRATION FORM </span>
+					<span class="login100-form-title-1"> Profile </span>
 				</div>
 
 				<form class="login100-form validate-form" action="editprofile" method="post" >
@@ -103,7 +103,7 @@ body{
 						data-validate="DOB is required">
 						<span class="label-input100">DOB</span>
 						<p>
-							<input type="text" id="datepicker" size="30" name="dateOfBirth" value="${dob}">
+							<input type="text" id="datepicker" size="30" maxlength="10" name="dateOfBirth" value="${dob}">
 						</p>
 						<span class="focus-input100"></span>
 					</div>
@@ -111,15 +111,15 @@ body{
 						data-validate="EMAILID is required">
 						<span class="label-input100">EMAILID</span> <input
 							class="input100" type="text" name="emailId"
-							placeholder="Enter EMAILID" value="${applicant.emailId}"> <span class="focus-input100"></span>
+							placeholder="Enter EMAILID" value="${applicant.emailId}" pattern="[a-zA-Z0-9]+[@]{1}[a-zA-Z]+[.]{1}[a-zA-z]{2,4}" title="provide proper email id"> <span class="focus-input100"></span>
 					</div>
-					<div class="wrap-input100 validate-input m-b-26"
+					<!-- <div class="wrap-input100 validate-input m-b-26"
 						data-validate="Mobile Number is required">
 						<span class="label-input100">Mobile Number</span> <input
 							class="input100" type="text" name="Mobile_number"
 							placeholder="Enter Mobile Number" value=""> <span
 							class="focus-input100"></span>
-					</div>
+					</div> -->
 					<!-- <div class="wrap-input100 validate-input m-b-26"
 						data-validate="Login is required">
 						<span class="label-input100">LOGIN ID</span> <input

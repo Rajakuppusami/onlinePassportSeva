@@ -13,7 +13,8 @@ $( function() {
       buttonImageOnly: true,
       buttonText: "Select date",
       dateFormat: "dd-mm-yy",
-      showAnim: "slideDown"
+      showAnim: "slideDown",
+      yearRange: '1950:2019'
     });	
    $( "#format" ).on( "change", function() {
       $( "#datepicker" ).datepicker( "option", "dateFormat", $( this ).val() );
