@@ -31,5 +31,11 @@ public class PaymentServiceImplementation {
 		}
 		return false;
 	}
+
+	public List<Payment> findAllPayment() {
+		// TODO Auto-generated method stub
+		List<Payment> paymentList=paymentRepository.findAll();
+		return paymentList;
+	}
 	
 }

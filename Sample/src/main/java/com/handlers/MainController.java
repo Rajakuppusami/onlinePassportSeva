@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.model.Admin;
 import com.model.Applicants;
 import com.model.PassportOffice;
 import com.model.QualifiedApplicants;
@@ -62,10 +63,10 @@ public class MainController {
 	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public ModelAndView test(){
 		ModelAndView model = new ModelAndView();
-		/*Admin admin = new Admin();
+		Admin admin = new Admin();
 		admin.setUserId("raja");
 		admin.setPassword("raja");
-		adminservice.saveAdmin(admin);*/
+		adminservice.saveAdmin(admin);
 		model.setViewName("test");
 		return model;
 	}

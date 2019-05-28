@@ -79,5 +79,16 @@ public class ApplicantsServiceImplementation {
 		applicant.setPassword(password);
 		applicantsRepository.save(applicant);
 	}
+
+
+	public List<Applicants> findAll() {
+		List<Applicants> applicantList=applicantsRepository.findAll();
+		return applicantList;
+	}
+
+
+	public void deleteApplicantByApplicantId(String applicantId) {
+		applicantsRepository.deleteByApplicantId(applicantId);
+	}
 	
 }
