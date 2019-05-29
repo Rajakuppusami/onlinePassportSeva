@@ -226,7 +226,7 @@
 					</center>
 					<div class="card-body">
 						<div class="">
-						  <div class="card card-body">
+						  <div class="">
 						    <ul class="list-group">
 							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Application Id</b></div><div class="col-sm-9">:${applicationid}</div></div></li>
 							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Passport Office</b></div><div class="col-sm-9">:${passportoffice}</div></div></li>
@@ -250,7 +250,7 @@
 						<p class="card-text"></p>
 					</div>
 					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Click here </a>
+						<a href="resheduleandcancel" class="btn btn-primary">Click here </a>
 					</div>
 				</div>
 			</div>

@@ -143,7 +143,7 @@
 						<p class="card-text"></p>
 					</div>
 					<div class="card-footer">
-						<a href="viewallrescheduleandcancellation" class="btn btn-primary">Click here </a>
+						<a href="viewallpayment" class="btn btn-primary">Click here </a>
 					</div>
 				</div>
 			</div>

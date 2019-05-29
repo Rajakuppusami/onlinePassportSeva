@@ -449,6 +449,20 @@ public class MainController {
 		return model;
 	}
 	
+	@RequestMapping(value="/resheduleandcancel", method=RequestMethod.GET)
+	public ModelAndView resheduleandcancelPage(HttpSession session) {
+		ModelAndView model = new ModelAndView();
+		model=checkSessionValidation(session,model);
+		if(!model.getViewName().equals("redirect:/login")){
+			
+			model.addObject("applicantid", session.getAttribute("applicantId"));
+			
+			model.addObject("", "");
+			model.setViewName("rescheduleandcancel");
+		}
+		return model;
+	}
+	
 	/*@RequestMapping(value="/forgotpassword", method=RequestMethod.GET)
 	public ModelAndView forgotpasswordPage() throws ParseException {
 		ModelAndView model = new ModelAndView();
