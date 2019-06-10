@@ -36,6 +36,7 @@ import com.service.AdminServiceImplementation;
 import com.service.ApplicantsServiceImplementation;
 import com.service.PaymentServiceImplementation;
 import com.service.QualifiedApplicantsServiceImplementation;
+import com.service.RescheduleAndCancel;
 import com.service.ScheduleServiceImplementation;
 
 @Controller
@@ -51,6 +52,8 @@ public class MainController {
 	private QualifiedApplicantsServiceImplementation qualifiedApplicantsService;
 	@Autowired
 	private PaymentServiceImplementation paymentService;
+	@Autowired
+	private RescheduleAndCancel rescheduleAndCancelService;
 	@Autowired
 	private PassportOffice passportoffice;
 	
@@ -454,11 +457,50 @@ public class MainController {
 		ModelAndView model = new ModelAndView();
 		model=checkSessionValidation(session,model);
 		if(!model.getViewName().equals("redirect:/login")){
-			
-			model.addObject("applicantid", session.getAttribute("applicantId"));
-			
-			model.addObject("", "");
+			String applicantId = (String) session.getAttribute("applicantId");
+			model.addObject("applicantid", applicantId);
+			model.addObject("applicants", applicantService.findByApplicantId(applicantId));
+			model.addObject("qualifiedapplicants",qualifiedApplicantsService.findByApplicantId(applicantId) );
 			model.setViewName("rescheduleandcancel");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value="/reshedule", method=RequestMethod.POST)
+	public ModelAndView reshedule(HttpSession session,@RequestParam("applicantId") String applicantId, @RequestParam("applicationId") String applicationId) {
+		ModelAndView model = new ModelAndView();
+		model=checkSessionValidation(session,model);
+		System.out.println("#### applicantId :"+applicantId);
+		if(!model.getViewName().equals("redirect:/login")){
+			if(rescheduleAndCancelService.checkEligibleForRescheduleByAttempt(applicantId)) {
+				if(rescheduleAndCancelService.checkEligibleForRescheduleByYear(applicantId, applicationId)) {
+					List<String> monthList=scheduleService.getMonthListByCurrentYear();
+					model.addObject("passportoffices", passportoffice.getPassportOfficeList());
+					model.addObject("months", monthList);
+					model.setViewName("schedule");
+				}else {
+					session.setAttribute("modelscript", "show");
+					session.setAttribute("modelbodycontent", "you cannot reschedule because end of this year.");
+					session.setAttribute("schedulebuttoncss", "");
+					model.setViewName("redirect:/home");
+				}
+			}else {
+				session.setAttribute("modelscript", "show");
+				session.setAttribute("modelbodycontent", "you cannot reschedule because only 2 attempt are allowed, you limit exceeds");
+				session.setAttribute("schedulebuttoncss", "");
+				model.setViewName("redirect:/home");
+			}
+		}
+		return model;
+	}
+	
+	@RequestMapping(value="/cancel", method=RequestMethod.POST)
+	public ModelAndView cancel(HttpSession session) {
+		ModelAndView model = new ModelAndView();
+		model=checkSessionValidation(session,model);
+		if(!model.getViewName().equals("redirect:/login")){
+			
+			model.setViewName("");
 		}
 		return model;
 	}

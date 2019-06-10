@@ -28,24 +28,6 @@
 						</li>
 						<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 						</li>
-						<!-- <li class="nav-item">
-		            <a class="nav-link" href="services.html">Services</a>
-		          </li>
-		          <li class="nav-item">
-		            <a class="nav-link" href="contact.html">Contact</a>
-		          </li> -->
-		         <!-- <li class="nav-item dropdown">
-		            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		              Portfolio
-		            </a>
-		            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-		              <a class="dropdown-item" href="portfolio-1-col.html">1 Column Portfolio</a>
-		              <a class="dropdown-item" href="portfolio-2-col.html">2 Column Portfolio</a>
-		              <a class="dropdown-item" href="portfolio-3-col.html">3 Column Portfolio</a>
-		              <a class="dropdown-item" href="portfolio-4-col.html">4 Column Portfolio</a>
-		              <a class="dropdown-item" href="portfolio-item.html">Single Portfolio Item</a>
-		            </div>
-		          </li> -->
 		          <li class="nav-item dropdown">
 		            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		              Profile
@@ -81,18 +63,19 @@
 		
 		    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
 		      <div class="card-body">
-		        <form action="" method="post">
+		        <form action="reshedule" method="post">
 		        	<div class="form-group">
 					    <label for="username">Username</label>
-					    <input type="text" class="form-control" id="username" placeholder="name@example.com" value="" readonly >
+					    <input type="text" class="form-control" name="name" id="username"  value="${qualifiedapplicants.name }" readonly >
+					    <input type="hidden"  name="applicantId" value="${qualifiedapplicants.applicantId }">
 					</div>
 		        	<div class="form-group">
 					    <label for="emailid">Email Id</label>
-					    <input type="email" class="form-control" id="emailid" placeholder="name@example.com" value="" readonly >
+					    <input type="email" class="form-control" id="emailid" value="${qualifiedapplicants.emailId }" readonly >
 					</div>
 					<div class="form-group">
 					    <label for="applicantionid">Application Id</label>
-					    <input type="text" class="form-control" id="applicantionid" placeholder="" value="" readonly >
+					    <input type="text" class="form-control" id="applicantionid" name="applicationId" placeholder="" value="${qualifiedapplicants.applicationId }" readonly >
 					</div>
 					<div class="form-group">
 					    <label for="reason">Reason</label>
@@ -121,23 +104,24 @@
 		        <form>
 		        	<div class="form-group">
 					    <label for="username">Username</label>
-					    <input type="text" class="form-control" id="username" placeholder="name@example.com" value="">
+					    <input type="text" class="form-control" id="username" value="${qualifiedapplicants.name }" name="name" readonly>
+					    <input type="hidden"  name="applicantId" value="${qualifiedapplicants.applicantId }">
 					</div>
 		        	<div class="form-group">
 					    <label for="emailid">Email Id</label>
-					    <input type="email" class="form-control" id="emailid" placeholder="name@example.com" value="">
+					    <input type="email" class="form-control" id="emailid" value="${qualifiedapplicants.emailId }" readonly>
 					</div>
 					<div class="form-group">
-					    <label for="applicantionid">Applicant Id</label>
-					    <input type="text" class="form-control" id="applicantionid" placeholder="" value="">
+					    <label for="applicantionid">Application Id</label>
+					    <input type="text" class="form-control" id="applicantionid" name="applicationId" value="${qualifiedapplicants.applicationId }" readonly>
 					</div>
 					<div class="form-group">
 					    <label for="reason">Reason</label>
 					    <textarea class="form-control" id="reason"></textarea>
 					</div>
 					<div class="custom-control custom-checkbox">
-					  <input type="checkbox" class="custom-control-input" id="customCheck1">
-					  <label class="custom-control-label" for="customCheck1">I Agree</label>
+					  <input type="checkbox" class="custom-control-input" id="customCheck2">
+					  <label class="custom-control-label" for="customCheck2">I Agree</label>
 					</div>
 					<br>
 					<button class="btn btn-primary" type="submit">Submit form</button>

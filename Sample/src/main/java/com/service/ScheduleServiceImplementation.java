@@ -194,4 +194,19 @@ public class ScheduleServiceImplementation {
 		}
 		return schedule;
 	}
+
+	public List<String> getMonthListByCurrentYear() {
+		
+		List<String> monthList = new ArrayList<String>();
+		LocalDate today = LocalDate.now();
+		int currentYear = today.getYear();
+		for (int i = 1; i <4; i++) {
+			monthList.add(today.getMonth().toString());
+			today=today.plusMonths(1);
+			if(today.getYear()!=currentYear)
+				break;
+		}
+		System.out.println(monthList);
+		return monthList;
+	}
 }
