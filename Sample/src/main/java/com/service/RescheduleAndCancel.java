@@ -45,7 +45,7 @@ public class RescheduleAndCancel {
 			}
 			if(firstAppointmentDate!=null) {
 				LocalDate fpd = firstAppointmentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-				System.out.println("####"+fpd+ " : "+ firstAppointmentDate);
+				//System.out.println("####"+fpd+ " : "+ firstAppointmentDate);
 				if(fpd.getYear()==currentDate.getYear()) {
 					return true;
 				}else {
