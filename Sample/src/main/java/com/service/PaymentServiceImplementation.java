@@ -37,5 +37,14 @@ public class PaymentServiceImplementation {
 		List<Payment> paymentList=paymentRepository.findAll();
 		return paymentList;
 	}
+
+	public Payment getPaymentData(String applicationId) {
+		Payment payment = null;
+		List<Payment> paymentList = paymentRepository.findByApplicationId(applicationId);
+		if(!paymentList.isEmpty()) {
+			payment = paymentList.get(paymentList.size()-1);
+		}
+		return payment;
+	}
 	
 }

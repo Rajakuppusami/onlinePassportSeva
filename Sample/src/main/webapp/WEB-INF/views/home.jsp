@@ -233,6 +233,10 @@
 							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Scheduled Date</b></div><div class="col-sm-9">:${scheduleddate}</div></div></li>
 							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Scheduled Time</b></div><div class="col-sm-9">:${scheduledtime}</div></div></li>
 							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Payment Status</b></div><div class="col-sm-9">:${paymentstatus}</div></div></li>
+							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Reschedule </b></div><div class="col-sm-9">:${reschedulestatus}</div></div></li>
+							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>cancellation</b></div><div class="col-sm-9">:${cancellationstatus}</div></div></li>
+							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>cancellation Date</b></div><div class="col-sm-9">:${cancellationDate}</div></div></li>
+							  <li class="list-group-item"><div class="row"><div class="col-sm-3"><b>Refund Date</b></div><div class="col-sm-9">:${refundDate}</div></div></li>
 							</ul>
 						  </div>
 						</div>

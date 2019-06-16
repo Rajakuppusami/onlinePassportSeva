@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.model.Admin;
 import com.model.Applicants;
 import com.model.PassportOffice;
+import com.model.Payment;
 import com.model.QualifiedApplicants;
 import com.model.Schedule;
 import com.service.AdminServiceImplementation;
@@ -211,18 +212,48 @@ public class MainController {
 			model.addObject("modelbodycontent", session.getAttribute("modelbodycontent"));
 			model.addObject("schedulebuttoncss", session.getAttribute("schedulebuttoncss"));
 			Schedule schedule=scheduleService.getScheduledData((String)session.getAttribute("applicantId"));
+			Payment paymentDetails = null;
+			/*if(schedule.isPaymentStatus())
+			{
+				paymentDetails = paymentService.getPaymentData(schedule.getApplicationId());
+			}*/
 			if(schedule==null){
 				model.addObject("applicationid", " Not yet scheduled");
 				model.addObject("passportoffice", " Not yet scheduled");
 				model.addObject("scheduleddate", " Not yet scheduled");
 				model.addObject("scheduledtime", " Not yet scheduled");
 				model.addObject("paymentstatus", " Not yet scheduled");
+				model.addObject("reschedulestatus", " Not yet scheduled");
+				model.addObject("cancellationstatus", " Not yet scheduled");
+				model.addObject("cancellationDate", " Not yet scheduled");
+				model.addObject("refundDate", " Not yet scheduled");
 			}else{
+				if(schedule.isPaymentStatus())
+				{
+					paymentDetails = paymentService.getPaymentData(schedule.getApplicationId());
+				}
 				model.addObject("applicationid", schedule.getApplicationId());
 				model.addObject("passportoffice", schedule.getPassportOffice());
 				model.addObject("scheduleddate", sdf.format(schedule.getScheduleDate()));
 				model.addObject("scheduledtime", new SimpleDateFormat("HH:mm").format(schedule.getScheduleDateTime()));
 				model.addObject("paymentstatus", "success");
+				model.addObject("reschedulestatus", schedule.isReshedule());
+				model.addObject("cancellationstatus", schedule.isCancellationStatus());
+				if(paymentDetails!=null) {
+					if(paymentDetails.getCancellationDate()!=null)
+						model.addObject("cancellationDate",sdf.format(paymentDetails.getCancellationDate()) );
+					else
+						model.addObject("cancellationDate"," Not yet scheduled");
+					if(paymentDetails.getRefundDate()!=null)
+						model.addObject("refundDate", sdf.format(paymentDetails.getRefundDate()));
+					else
+						model.addObject("refundDate", " Not yet scheduled");
+				}else {
+					model.addObject("cancellationDate", " Not yet scheduled");
+					model.addObject("refundDate", " Not yet scheduled");
+				}
+				
+				
 			}
 			/*model.addObject("viewschedulecss", session.getAttribute("viewschedulecss"));*/
 			session.setAttribute("modelscript", "hide");
@@ -324,23 +355,25 @@ public class MainController {
 			List<String> monthList=scheduleService.getMonthList();
 			model.addObject("passportoffices", passportoffice.getPassportOfficeList());
 			model.addObject("months", monthList);
+			model.addObject("operation", "schedule");
 			model.setViewName("schedule");
 		}
 		return model;
 	}
 	
 	@RequestMapping(value="/scheduleappointment", method=RequestMethod.POST)
-	public ModelAndView scheduleappointment(@RequestParam("passportoffice") String passportOffice, @RequestParam("month") String month,HttpServletRequest request) {
+	public ModelAndView scheduleappointment(@RequestParam("passportoffice") String passportOffice, @RequestParam("month") String month, @RequestParam("operation") String operation,HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		System.out.println(passportOffice+" : "+month);
 		HttpSession session = request.getSession();
 		String applicantId = (String) session.getAttribute("applicantId");
 		Map<String,LinkedHashMap<String, String>> tableData = scheduleService.checkAvailabeDate(passportOffice, month);
-		
+		if(operation.equals("schedule")) {
 		if(!scheduleService.checkValidScheduler(applicantId)){
 			// should change css for reschedule functionality
 			System.out.println("#### old scheduler ----");
 			model.addObject("oldSchedulerButtoncss", "d-none");
+		}
 		}
 		System.out.println(tableData);
 		List<String> monthList=scheduleService.getMonthList();
@@ -349,12 +382,18 @@ public class MainController {
 		model.addObject("monthvalue", month);
 		model.addObject("passportoffices", passportoffice.getPassportOfficeList());
 		model.addObject("months", monthList);
+		model.addObject("operation", operation);
+		if(operation.equals("schedule")) {
+			model.addObject("formaction", "checkforconfirm");
+		}else if(operation.equals("reschedule")) {
+			model.addObject("formaction", "checkforconfirm");
+		}
 		model.setViewName("schedule");
 		return model;
 	}
 	
 	@RequestMapping(value="/checkforconfirm", method=RequestMethod.POST)
-	public ModelAndView checkavailablity(@RequestParam("date") String crmDate,@RequestParam("time") String crmTime,@RequestParam("passportoffice") String passportOffice,HttpServletRequest request) throws ParseException {
+	public ModelAndView checkavailablity(@RequestParam("date") String crmDate,@RequestParam("time") String crmTime,@RequestParam("passportoffice") String passportOffice,@RequestParam("operation") String operation,HttpServletRequest request) throws ParseException {
 		ModelAndView model = new ModelAndView();
 		HttpSession session = request.getSession();
 		String applicantId = (String) session.getAttribute("applicantId");
@@ -366,7 +405,12 @@ public class MainController {
 		model.addObject("applicantid", applicantId);
 		model.addObject("applicationid",qualifiedApplicants.getApplicationId());
 		model.addObject("name",qualifiedApplicants.getName());
-		model.setViewName("payment");
+		if(operation.equals("schedule")) {
+			model.setViewName("payment");
+		}else if(operation.equals("reschedule")) {
+			model.setViewName("rescheduleconformation");
+		}
+		
 		return model;
 	}
 	
@@ -414,6 +458,7 @@ public class MainController {
 		
 		return model;
 	}
+	
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public ModelAndView logout(HttpSession session) {
 		ModelAndView model = new ModelAndView();
@@ -467,20 +512,23 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/reshedule", method=RequestMethod.POST)
-	public ModelAndView reshedule(HttpSession session,@RequestParam("applicantId") String applicantId, @RequestParam("applicationId") String applicationId) {
+	public ModelAndView reshedule(HttpSession session, @RequestParam("applicationId") String applicationId) {
 		ModelAndView model = new ModelAndView();
 		model=checkSessionValidation(session,model);
-		System.out.println("#### applicantId :"+applicantId);
+		//System.out.println("#### applicantId :"+applicantId);
 		if(!model.getViewName().equals("redirect:/login")){
+			String applicantId = (String) session.getAttribute("applicantId");
+			System.out.println("#### applicantId :"+applicantId);
 			if(rescheduleAndCancelService.checkEligibleForRescheduleByAttempt(applicantId)) {
 				if(rescheduleAndCancelService.checkEligibleForRescheduleByYear(applicantId, applicationId)) {
 					List<String> monthList=scheduleService.getMonthListByCurrentYear();
 					model.addObject("passportoffices", passportoffice.getPassportOfficeList());
 					model.addObject("months", monthList);
+					model.addObject("operation", "reschedule");
 					model.setViewName("schedule");
 				}else {
 					session.setAttribute("modelscript", "show");
-					session.setAttribute("modelbodycontent", "you cannot reschedule because end of this year.");
+					session.setAttribute("modelbodycontent", "Sorry, you cann't reschedule because you can reschedule only before the scheduled date");
 					session.setAttribute("schedulebuttoncss", "");
 					model.setViewName("redirect:/home");
 				}
@@ -494,13 +542,48 @@ public class MainController {
 		return model;
 	}
 	
+	@RequestMapping(value="/rescheduleconform", method=RequestMethod.POST)
+	public ModelAndView rescheduleConform(@ModelAttribute Schedule schedule, @RequestParam("date") String crmDate,@RequestParam("time") String crmTime,HttpServletRequest request) throws ParseException{
+		ModelAndView model = new ModelAndView();
+		HttpSession session =request.getSession();
+		System.out.println("#### "+schedule);
+		String applicantId = (String) session.getAttribute("applicantId");
+		crmDate = crmDate.substring(0,10);
+		if(scheduleService.checkAvailabe(formDate(crmDate,crmTime),schedule.getPassportOffice())){
+			schedule.setApplicantId(applicantId);
+			schedule.setScheduleDate(formDate(crmDate));
+			schedule.setScheduleDateTime(formDate(crmDate,crmTime));
+			rescheduleAndCancelService.saveReschedule(schedule);
+			session.setAttribute("modelscript", "show");
+			session.setAttribute("modelbodycontent", "Reschedule is successful");
+			session.setAttribute("schedulebuttoncss", "");
+			model.setViewName("redirect:/home");
+		}else{
+			model.addObject("modelscript", "show");
+			model.addObject("modelbodycontent", "selected date is not available");
+			model.setViewName("schedule");
+		}
+		
+		return model;
+	}
+	
 	@RequestMapping(value="/cancel", method=RequestMethod.POST)
 	public ModelAndView cancel(HttpSession session) {
 		ModelAndView model = new ModelAndView();
 		model=checkSessionValidation(session,model);
 		if(!model.getViewName().equals("redirect:/login")){
+			String applicantId = (String) session.getAttribute("applicantId");
+			if(rescheduleAndCancelService.checkforcancellation(applicantId)) {
+				rescheduleAndCancelService.cancel(applicantId);
+				session.setAttribute("modelscript", "show");
+				session.setAttribute("modelbodycontent", "cancellation is successfull");
+				model.setViewName("redirect:/home");
+			}else {
+				session.setAttribute("modelscript", "show");
+				session.setAttribute("modelbodycontent", "Already cancelled");
+				model.setViewName("redirect:/home");
+			}
 			
-			model.setViewName("");
 		}
 		return model;
 	}

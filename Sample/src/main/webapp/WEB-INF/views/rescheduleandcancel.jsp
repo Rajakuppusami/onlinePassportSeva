@@ -101,7 +101,7 @@
 		    </div>
 		    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 		      <div class="card-body">
-		        <form>
+		        <form action="cancel" method="post" >
 		        	<div class="form-group">
 					    <label for="username">Username</label>
 					    <input type="text" class="form-control" id="username" value="${qualifiedapplicants.name }" name="name" readonly>

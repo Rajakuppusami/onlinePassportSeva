@@ -90,6 +90,7 @@
 						</select>
 						</div>
 					  </div>
+					  	<input type="hidden" name="operation" value="${operation}">
 						<input type="submit" class="btn btn-primary mb-2 float-right" value="check for availability">
 					</form>
 				</div>
@@ -131,10 +132,11 @@
 											${time.value}
 											<br>
 											<br>
-											<form action="checkforconfirm" method="post">
+											<form action="${formaction}" method="post">
 												<input type="hidden" name="date" value="${date.key}">
 												<input type="hidden" name="time" value="${time.key}">
 												<input type="hidden" name="passportoffice" value="${passportofficevalue}">
+												<input type="hidden" name="operation" value="${operation}">
 												<input type="submit" class="btn btn-link ${oldSchedulerButtoncss}" value="confirm">
 											</form>
 										</td>
